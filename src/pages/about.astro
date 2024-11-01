@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
+import Menu from '../components/menu.astro';
 
 const BASE_URL = import.meta.env.BASE_URL
 ---
@@ -12,11 +13,11 @@ const BASE_URL = import.meta.env.BASE_URL
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="stylesheet" href={`${BASE_URL}/style.css`}>
-		<title>Astro: about page</title>
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
 		<ViewTransitions />
+		<title>Astro: about page</title>
 	</head>
 	<body>
 		<div class="canvas-wrapper">
@@ -24,18 +25,7 @@ const BASE_URL = import.meta.env.BASE_URL
 		</div>
 		<div class="page-wrapper">
 			<h1 class="page-heading">Astro demo with Three.js and page transitions</h1>
-			<ul class="page-menu">
-				<li>
-					<a href={`${BASE_URL}/`} class={Astro.url.pathname === "/" ? "active" : ""}>
-						home
-					</a>
-				</li>
-				<li>
-					<a href={`${BASE_URL}/about`} class={Astro.url.pathname === "/about" ? "active" : ""}>
-						about
-					</a>
-				</li>
-			</ul>
+			<Menu />
 			<div class="page-box">
 				{[...Array(50)].map(() => (
 					<p>about page about page about page about page about page about page about page about page about page about page about page about page</p>
