@@ -1,0 +1,78 @@
+body {
+	margin: 0;
+	background: #1f1f1f;
+	color: #fff;
+	box-sizing: border-box;
+	font-family: "Pixelify Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+		Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+		"Segoe UI Symbol";
+	font-optical-sizing: auto;
+	font-weight: 400;
+	font-style: normal;
+	overflow-x: hidden;
+	background-image: radial-gradient(circle, #535353 1px, transparent 1px);
+	background-size: 15px 15px;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+a {
+	color: #fff;
+}
+
+#three-js-canvas {
+	position: relative;
+}
+
+.canvas-wrapper {
+	position: absolute;
+	overflow: hidden;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.page-wrapper {
+	position: relative;
+	padding: 40px;
+}
+
+.page-heading {
+	text-align: center;
+}
+
+.page-menu {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+	list-style: none;
+	text-transform: uppercase;
+	gap: 20px;
+	font-size: 24px;
+}
+
+.page-menu a {
+	text-decoration: none;
+}
+
+.page-menu a.active,
+.page-menu a:hover {
+	text-decoration: underline;
+}
+
+.page-box {
+	width: 100%;
+	height: calc(100vh - 250px);
+	background: rgba(0, 0, 0, 0.5);
+	padding: 20px;
+	overflow: hidden;
+}
+
+.page-box p {
+	font-size: 34px;
+	line-height: 34px;
+}

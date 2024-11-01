@@ -1,0 +1,45 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="stylesheet" href="/style.css">
+		<title>Astro: home page</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
+		<ViewTransitions />
+	</head>
+	<body>
+		<div class="canvas-wrapper">
+			<canvas id="three-js-canvas" />
+		</div>
+		<div class="page-wrapper">
+			<h1 class="page-heading">Astro demo with Three.js and page transitions</h1>
+			<ul class="page-menu">
+				<li>
+					<a href="/" class={Astro.url.pathname === "/" ? "active" : ""}>
+						home
+					</a>
+				</li>
+				<li>
+					<a href="/about" class={Astro.url.pathname === "/about" ? "active" : ""}>
+						about
+					</a>
+				</li>
+			</ul>
+			<div class="page-box">
+				{[...Array(50)].map((x, i) => (
+					<p key={i}>home page home page home page home page home page home page</p>
+				))}
+			</div>
+		</div>
+		<script src="../scripts/entry.ts"></script>
+	</body>
+</html>
