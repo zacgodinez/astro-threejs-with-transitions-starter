@@ -2,6 +2,16 @@
 const BASE_URL = import.meta.env.BASE_URL
 ---
 
+<div>
+	<pre>
+1. {Astro.url.pathname}
+
+	</pre>
+	<pre>
+
+2. {BASE_URL}
+	</pre>
+</div>
 <ul class="page-menu">
 	<li>
 		<a href={`${BASE_URL}/`} class={Astro.url.pathname === `${BASE_URL}/` ? "active" : ""}>
