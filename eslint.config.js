@@ -42,7 +42,7 @@ export default [
       parser: typescriptParser,
     },
     rules: {
-      // ... (rest of your existing rules)
+      // Note: you must disable the base rule as it can report incorrect errors
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
@@ -51,7 +51,56 @@ export default [
           destructuredArrayIgnorePattern: "^_",
         },
       ],
-      // ... (other existing rules)
+      "@typescript-eslint/no-non-null-assertion": "off",
+
+      complexity: ["warn", { max: 10 }], // Warn when code complexity exceeds 10
+
+      // Uppercase Constants
+      "no-restricted-syntax": [
+        "warn",
+        {
+          selector:
+            "VariableDeclarator[init.type='Literal'][id.name!=/^[A-Z_]+$/]",
+          message: "Constants should be in uppercase with underscores.",
+        },
+      ],
+
+      "no-warning-comments": [
+        "warn",
+        { terms: ["todo", "fixme", "xxx"], location: "start" },
+      ],
+
+      "max-lines-per-function": ["warn", { max: 75, skipComments: true }],
+
+      "id-length": [
+        "warn",
+        { min: 3, exceptions: ["i", "j", "x", "y", "z", "_"] }, // Warn if variable names are shorter than 3 characters
+      ],
+
+      "no-magic-numbers": [
+        "warn",
+        { ignore: [0, 1, -1], ignoreArrayIndexes: true, enforceConst: true },
+      ],
+
+      "max-lines": [
+        "warn",
+        {
+          max: 400,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
+
+      "max-depth": ["warn", 3],
+
+      indent: ["warn", 2],
+
+      "prettier/prettier": "warn",
+
+      "prefer-const": "warn",
+      "no-var": "warn",
+
+      "no-else-return": "warn",
     },
   },
   {
