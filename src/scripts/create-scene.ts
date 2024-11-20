@@ -1,56 +1,98 @@
-import { type SceneState } from './types';
-import { ROTATION_SPEED } from './constants';
-import { saveState, loadSavedState } from './storage-utils';
-import {
-  createInitialState,
-  initRenderer,
-  createCube,
-  setupLights,
-} from './scene-setup';
+// create-scene.ts
+import * as THREE from 'three';
+import { type SceneConfig, type SceneState } from './types';
+import { DEFAULT_CONFIG } from './constants';
+import { initRenderer, initScene, initCamera, initCube, initLights } from './scene-setup';
 
-const createScene = (canvasId: string) => {
-  const state: SceneState = createInitialState();
+const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) => {
+  const config: SceneConfig = { ...DEFAULT_CONFIG, ...customConfig };
+
+  const state: SceneState = {
+    renderer: null,
+    scene: null,
+    camera: null,
+    cube: null,
+    animationFrameId: null,
+    isAnimating: false,
+  };
+
+  const updateSize = (): void => {
+    if (!state.renderer || !state.camera) return;
+
+    const canvas = state.renderer.domElement;
+    const container = canvas.parentElement;
+    const width = container?.clientWidth || window.innerWidth;
+    const height = container?.clientHeight || window.innerHeight;
+
+    state.camera.aspect = width / height;
+    state.camera.updateProjectionMatrix();
+    state.renderer.setSize(width, height);
+  };
 
   const animate = (): void => {
-    if (!state.cube || !state.renderer) return;
+    if (!state.isAnimating || !state.renderer || !state.scene || !state.camera || !state.cube)
+      return;
 
-    state.cube.rotation.x += ROTATION_SPEED;
-    state.cube.rotation.y += ROTATION_SPEED;
+    state.cube.rotation.x += config.rotationSpeed;
+    state.cube.rotation.y += config.rotationSpeed;
 
     state.renderer.render(state.scene, state.camera);
-    state.animationId = requestAnimationFrame(animate);
-
-    saveState(state.cube, canvasId);
+    state.animationFrameId = requestAnimationFrame(animate);
   };
 
   const init = (): void => {
-    state.renderer = initRenderer(canvasId);
-    if (!state.renderer) return;
+    try {
+      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
+      if (!canvas) throw new Error(`Canvas with id ${canvasId} not found`);
 
-    const savedState = loadSavedState(canvasId);
-    state.cube = createCube(savedState);
-    state.camera.position.z = 0;
-    state.scene.add(state.cube);
+      state.renderer = initRenderer(canvas, config.defaultPixelRatio);
+      state.scene = initScene();
+      state.camera = initCamera(config, canvas.clientWidth / canvas.clientHeight);
+      state.cube = initCube(config);
 
-    const lights = setupLights();
-    lights.forEach((light) => state.scene.add(light));
+      state.scene.add(state.cube);
+      initLights(state.scene, config);
 
-    animate();
+      state.isAnimating = true;
+      animate();
+
+      window.addEventListener('resize', updateSize);
+    } catch (error) {
+      console.error('Failed to initialize scene:', error);
+      cleanup();
+    }
   };
 
   const cleanup = (): void => {
-    if (state.cube) {
-      saveState(state.cube, canvasId);
-      state.cube.geometry.dispose();
+    state.isAnimating = false;
+
+    if (state.animationFrameId !== null) {
+      cancelAnimationFrame(state.animationFrameId);
     }
 
-    if (state.animationId) {
-      cancelAnimationFrame(state.animationId);
+    if (state.scene) {
+      state.scene.traverse((object) => {
+        if (object instanceof THREE.Mesh) {
+          object.geometry.dispose();
+          if (Array.isArray(object.material)) {
+            object.material.forEach((material) => material.dispose());
+          } else {
+            object.material.dispose();
+          }
+        }
+      });
     }
 
     if (state.renderer) {
       state.renderer.dispose();
+      state.renderer.forceContextLoss();
     }
+
+    window.removeEventListener('resize', updateSize);
+
+    Object.keys(state).forEach((key) => {
+      state[key as keyof SceneState] = null;
+    });
   };
 
   return {
