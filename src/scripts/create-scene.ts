@@ -31,6 +31,29 @@ type SavedState = {
   };
 };
 
+const createLocalStorageKey = (canvasId: string): string =>
+  `cube-state-${canvasId}`;
+
+const parseRotation = (savedState: SavedState, cube: THREE.Mesh): void => {
+  if (savedState.rotation) {
+    const { xAxisRotation, yAxisRotation, zAxisRotation } = savedState.rotation;
+    cube.rotation.x = xAxisRotation;
+    cube.rotation.y = yAxisRotation;
+    cube.rotation.z = zAxisRotation;
+  }
+};
+
+const parsePosition = (savedState: SavedState, cube: THREE.Mesh): void => {
+  if (savedState.position) {
+    const { xCoordinate, yCoordinate, zCoordinate } = savedState.position;
+    cube.position.x = xCoordinate;
+    cube.position.y = yCoordinate;
+    cube.position.z = zCoordinate;
+  } else {
+    cube.position.z = DEFAULT_Z_POSITION;
+  }
+};
+
 const createScene = (canvasId: string) => {
   const state: SceneState = {
     scene: new THREE.Scene(),
@@ -47,7 +70,7 @@ const createScene = (canvasId: string) => {
 
   const loadSavedState = (): SavedState | null => {
     try {
-      const savedState = localStorage.getItem(`cube-state-${canvasId}`);
+      const savedState = localStorage.getItem(createLocalStorageKey(canvasId));
       return savedState ? JSON.parse(savedState) : null;
     } catch (error) {
       console.warn('Error loading saved state:', error);
@@ -72,7 +95,10 @@ const createScene = (canvasId: string) => {
     };
 
     try {
-      localStorage.setItem(`cube-state-${canvasId}`, JSON.stringify(stateToSave));
+      localStorage.setItem(
+        createLocalStorageKey(canvasId),
+        JSON.stringify(stateToSave)
+      );
     } catch (error) {
       console.warn('Error saving state:', error);
     }
@@ -104,17 +130,8 @@ const createScene = (canvasId: string) => {
     const cube = new THREE.Mesh(geometry, material);
 
     if (savedState) {
-      if (savedState.rotation) {
-        cube.rotation.x = savedState.rotation.xAxisRotation;
-        cube.rotation.y = savedState.rotation.yAxisRotation;
-        cube.rotation.z = savedState.rotation.zAxisRotation;
-      }
-
-      if (savedState.position) {
-        cube.position.x = savedState.position.xCoordinate;
-        cube.position.y = savedState.position.yCoordinate;
-        cube.position.z = savedState.position.zCoordinate;
-      }
+      parseRotation(savedState, cube);
+      parsePosition(savedState, cube);
     } else {
       cube.position.z = DEFAULT_Z_POSITION;
     }

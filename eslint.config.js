@@ -66,7 +66,7 @@ export default [
 			// Descriptive Naming
 			"id-length": [
 				"warn",
-				{ min: 3, exceptions: ["i", "j", "x", "y", "_"] }, // Warn if variable names are shorter than 3 characters
+				{ min: 3, exceptions: ["i", "j", "x", "y", "z", "_"] }, // Warn if variable names are shorter than 3 characters
 			],
 
 			// Avoid Magic Numbers
