@@ -1,34 +1,27 @@
-import * as THREE from 'three';
-import { type SceneConfig, type SceneState } from './types';
+import { type SceneConfig } from './types';
 import { DEFAULT_CONFIG } from './constants';
+import { createSceneStateManager } from './scene-state-manager';
 import { initRenderer, initScene, initCamera, initCube, initLights } from './scene-setup';
 
 const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) => {
   const config: SceneConfig = { ...DEFAULT_CONFIG, ...customConfig };
-
-  const state: SceneState = {
-    renderer: null,
-    scene: null,
-    camera: null,
-    cube: null,
-    animationFrameId: null,
-    isAnimating: false,
-  };
+  const { getState, setState, cleanup: stateCleanup } = createSceneStateManager();
 
   const updateSize = (): void => {
-    if (!state.renderer || !state.camera) return;
+    const { renderer, camera } = getState();
+    if (!renderer || !camera) return;
 
-    const canvas = state.renderer.domElement;
-    const container = canvas.parentElement;
+    const container = renderer.domElement.parentElement;
     const width = container?.clientWidth || window.innerWidth;
     const height = container?.clientHeight || window.innerHeight;
 
-    state.camera.aspect = width / height;
-    state.camera.updateProjectionMatrix();
-    state.renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
   };
 
   const animate = (): void => {
+    const state = getState();
     if (!state.isAnimating || !state.renderer || !state.scene || !state.camera || !state.cube)
       return;
 
@@ -36,23 +29,28 @@ const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) 
     state.cube.rotation.y += config.rotationSpeed;
 
     state.renderer.render(state.scene, state.camera);
-    state.animationFrameId = requestAnimationFrame(animate);
+    setState({ animationFrameId: requestAnimationFrame(animate) });
   };
 
   const init = (): void => {
     try {
       const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-      if (!canvas) throw new Error(`Canvas with id ${canvasId} not found`);
+      const renderer = initRenderer(canvas, config.defaultPixelRatio);
+      const scene = initScene();
+      const camera = initCamera(config, canvas.clientWidth / canvas.clientHeight);
+      const cube = initCube(config);
 
-      state.renderer = initRenderer(canvas, config.defaultPixelRatio);
-      state.scene = initScene();
-      state.camera = initCamera(config, canvas.clientWidth / canvas.clientHeight);
-      state.cube = initCube(config);
+      scene.add(cube);
+      initLights(scene, config);
 
-      state.scene.add(state.cube);
-      initLights(state.scene, config);
+      setState({
+        renderer,
+        scene,
+        camera,
+        cube,
+        isAnimating: true,
+      });
 
-      state.isAnimating = true;
       animate();
 
       window.addEventListener('resize', updateSize);
@@ -63,31 +61,15 @@ const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) 
   };
 
   const cleanup = (): void => {
+    const state = getState();
     state.isAnimating = false;
 
     if (state.animationFrameId !== null) {
       cancelAnimationFrame(state.animationFrameId);
     }
 
-    if (state.scene) {
-      state.scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry.dispose();
-          if (Array.isArray(object.material)) {
-            object.material.forEach((material) => material.dispose());
-          } else {
-            object.material.dispose();
-          }
-        }
-      });
-    }
-
-    if (state.renderer) {
-      state.renderer.dispose();
-      state.renderer.forceContextLoss();
-    }
-
     window.removeEventListener('resize', updateSize);
+    stateCleanup();
   };
 
   return {
