@@ -1,4 +1,3 @@
-// create-scene.ts
 import * as THREE from 'three';
 import { type SceneConfig, type SceneState } from './types';
 import { DEFAULT_CONFIG } from './constants';
@@ -89,10 +88,6 @@ const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) 
     }
 
     window.removeEventListener('resize', updateSize);
-
-    Object.keys(state).forEach((key) => {
-      state[key as keyof SceneState] = null;
-    });
   };
 
   return {
