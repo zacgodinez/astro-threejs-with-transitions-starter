@@ -1,0 +1,9 @@
+export const CAMERA_FIELD_OF_VIEW = 75;
+export const CAMERA_NEAR_PLANE = 0.1;
+export const CAMERA_FAR_PLANE = 1000;
+export const RENDERER_SIZE = 800;
+export const WHITE_COLOR = 0xffffff;
+export const GRAY_COLOR = 0x404040;
+export const LIGHT_INTENSITY = 1;
+export const ROTATION_SPEED = 0.01;
+export const DEFAULT_Z_POSITION = -2;

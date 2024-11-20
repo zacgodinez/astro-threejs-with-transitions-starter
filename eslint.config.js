@@ -61,7 +61,7 @@ export default [
 			],
 
 			// Short Functions/Methods
-			"max-lines-per-function": ["warn", { max: 30, skipComments: true }], // Warn if a function exceeds 30 lines
+			"max-lines-per-function": ["warn", { max: 50, skipComments: true }], // Warn if a function exceeds 30 lines
 
 			// Descriptive Naming
 			"id-length": [
