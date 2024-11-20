@@ -1,6 +1,8 @@
 ---
 import Menu from '../components/menu.astro';
 import Head from '../components/head.astro';
+
+const PARA_NUMBER = 50;
 ---
 
 <html lang="en">
@@ -14,10 +16,10 @@ import Head from '../components/head.astro';
       <Menu />
       <div class="page-box">
         {
-          [...Array(50)].map(() => (
+          [...Array(PARA_NUMBER)].map(() => (
             <p>
-              about page about page about page about page about page about page about page about
-              page about page about page about page about page
+              home page home page home page home page home page home page home page home page home
+              page home page home page home page
             </p>
           ))
         }

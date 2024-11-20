@@ -1,13 +1,13 @@
 import astroEslintParser from "astro-eslint-parser";
 import eslintPluginAstro from "eslint-plugin-astro";
-import js from "@eslint/js";
+import eslintJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import typescriptParser from "@typescript-eslint/parser";
 import prettier from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 
 export default [
-	js.configs.recommended,
+	eslintJs.configs.recommended,
 	...eslintPluginAstro.configs["flat/recommended"],
 	...tseslint.configs.recommended,
 	prettierConfig,
@@ -16,34 +16,15 @@ export default [
 			prettier: prettier,
 		},
 		files: ["**/*.{js,jsx,ts,tsx,astro}"],
-		rules: {
-			"prettier/prettier": "warn", // Add this line to enable Prettier rule
-		},
-	},
-	{
-		files: ["**/*.astro"],
 		languageOptions: {
-			parser: astroEslintParser,
+			parser: typescriptParser, // Default parser
 			parserOptions: {
-				parser: "@typescript-eslint/parser",
 				extraFileExtensions: [".astro"],
 			},
 		},
-	},
-	{
-		files: ["**/*.{js,jsx,astro}"],
 		rules: {
+			"prettier/prettier": "warn",
 			"no-mixed-spaces-and-tabs": ["error", "smart-tabs"],
-		},
-	},
-	{
-		files: ["**/*.{ts,tsx}", "**/*.astro/*.js"],
-		languageOptions: {
-			parser: typescriptParser,
-		},
-		rules: {
-			// Note: you must disable the base rule as it can report incorrect errors
-			"no-unused-vars": "off",
 			"@typescript-eslint/no-unused-vars": [
 				"error",
 				{
@@ -55,7 +36,6 @@ export default [
 
 			complexity: ["warn", { max: 10 }], // Warn when code complexity exceeds 10
 
-			// Uppercase Constants
 			"no-restricted-syntax": [
 				"warn",
 				{
@@ -73,7 +53,7 @@ export default [
 
 			"id-length": [
 				"warn",
-				{ min: 3, exceptions: ["i", "j", "x", "y", "z", "_"] }, // Warn if variable names are shorter than 3 characters
+				{ min: 3, exceptions: ["i", "j", "x", "y", "z", "_"] },
 			],
 
 			"no-magic-numbers": [
@@ -91,15 +71,16 @@ export default [
 			],
 
 			"max-depth": ["warn", 3],
-
 			indent: ["warn", 2],
-
-			"prettier/prettier": "warn",
-
 			"prefer-const": "warn",
 			"no-var": "warn",
-
 			"no-else-return": "warn",
+		},
+	},
+	{
+		files: ["**/*.astro"],
+		languageOptions: {
+			parser: astroEslintParser,
 		},
 	},
 	{
