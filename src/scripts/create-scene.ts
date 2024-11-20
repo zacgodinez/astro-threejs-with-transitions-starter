@@ -22,8 +22,9 @@ const createScene = (canvasId: string, customConfig: Partial<SceneConfig> = {}) 
 
   const animate = (): void => {
     const state = getState();
-    if (!state.isAnimating || !state.renderer || !state.scene || !state.camera || !state.cube)
+    if (!state.isAnimating || !state.renderer || !state.scene || !state.camera || !state.cube) {
       return;
+    }
 
     state.cube.rotation.x += config.rotationSpeed;
     state.cube.rotation.y += config.rotationSpeed;
