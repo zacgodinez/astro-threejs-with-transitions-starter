@@ -1,24 +1,28 @@
 ---
-
 import Menu from '../components/menu.astro';
 import Head from '../components/head.astro';
 ---
 
 <html lang="en">
   <Head pageTitle="Astro: home page" />
-	<body>
-		<div class="canvas-wrapper">
-			<canvas id="three-js-canvas" />
-		</div>
-		<div class="page-wrapper">
-			<h1 class="page-heading">Astro demo with Three.js and page transitions</h1>
-			<Menu />
-			<div class="page-box">
-				{[...Array(50)].map(() => (
-					<p>home page home page home page home page home page home page home page home page home page home page home page home page</p>
-				))}
-			</div>
-		</div>
-		<script src="../scripts/entry.ts"></script>
-	</body>
+  <body>
+    <div class="canvas-wrapper">
+      <canvas id="three-js-canvas"></canvas>
+    </div>
+    <div class="page-wrapper">
+      <h1 class="page-heading">Astro demo with Three.js and page transitions</h1>
+      <Menu />
+      <div class="page-box">
+        {
+          [...Array(50)].map(() => (
+            <p>
+              home page home page home page home page home page home page home page home page home
+              page home page home page home page
+            </p>
+          ))
+        }
+      </div>
+    </div>
+    <script src="../scripts/entry.ts"></script>
+  </body>
 </html>
